@@ -5,7 +5,7 @@ async function getName(){
   let artistName = document.querySelector('input').value
 
   try{ 
-    const res = await fetch (`http://localhost:8000/api/bluesArtist/${artistName}`)
+    const res = await fetch (`https://blues-api-project.herokuapp.com/api/bluesArtist/${artistName}`)
     const data = await res.json()
     
     console.log(data)
