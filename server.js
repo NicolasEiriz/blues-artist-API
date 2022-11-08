@@ -1,62 +1,65 @@
-const { response } = require('express')
-const express = require('express')
+const express = require('express') //use express
+const bodyParser = require('body-parser')
 const app = express()
-const cors = require('cors')
-const PORT = 8000
+const MongoClient = require('mongodb').MongoClient
 
-app.use(cors()) 
+MongoClient.connect('mongodb+srv://vake:Luj45@cluster0.socyvio.mongodb.net/?retryWrites=true&w=majority', {
+  useUnifiedTopology: true})
+  .then(client =>{
+    console.log('Connected to Database')
+    const db = client.db('blues_api')
+    const artistCollection = db.collection('artist')
 
-//create an object with the blues artist
-let bluesArtist = {
+    //tell express we use EJS template engine
+    app.set('view engine', 'ejs')
+    
+    app.use(bodyParser.json())
 
-  'bb king':{
-    'birthName': 'Riley B. King',
-    'born': 'September 16, 1925',
-    'instruments': 'Guitar-vocals',
-    'yearsActive':	'1942-2014',
-    'genres': 'Electric blues[1]rhythm and blues[2]rock and roll[2]soul[3]gospel[4]'
-  },
-
-  'muddy water': {
-    'birthName': 'McKinley Morganfield',
-    'born': 'April 4, 1913 or 1915 (disputed)',
-    'instruments': 'Vocals-guitar-harmonica',
-    'yearsActive':	'1941-1982',
-    'genres': 'BluesChicago bluesDelta blues'
-  },
-
-  'unknown':{
-    'info': 'not upload yet'
-  }
-}
-
-//handle a GET request with the get method and respond with an html file
-
-
-app.get('/', (request, response) =>{
-  response.sendFile(__dirname + '/index.html')
+    app.put('/artist', (req, res)=>{
+      artistCollection.findOneAndUpdate(
+        { stageName: 'BB king'},
+        {
+          $set:{
+            stageName: req.body.stageName,
+            birthName: req.body.birthName
+          }
+        },
+        {
+          upsert: true
+        })
+        
+        .then(result => {
+          console.log(result)
+        })
   
-})
+        .catch(error => console.error(error))
+    })
 
-//set up the server to listen the browser
+    app.use(bodyParser.urlencoded({ extended: true}))
+    app.use(express.static('public')) //tell express to make public's folder accessible
+    
+     
+    
+    app.get('/', (req, res) =>{ //handle a GET request
+      db.collection('artist').find().toArray()
+      .then(results =>{
+        res.render('index.ejs', {artist: results})
+      })
+      .catch(error => console.error(error))
+    }) //serve an html file
+      
+      app.post('/artist', (req, res)=>{
+        artistCollection.insertOne(req.body)
+        .then(result =>{
+          res.redirect('/')
+        })
+        .catch(error=> console.error(error))
+      })
 
-app.get('/api/bluesArtist/:artistName', (request, response)=>{
-
-//if the artist name actually exist in my database give their respective information
-
+      app.listen(3000, () =>{
+        console.log('listening on 3000');
+      })
+    })
   
 
-  const artistName = request.params.artistName.toLowerCase()
-  if(bluesArtist[artistName]){
-
-  response.json(bluesArtist[artistName])}
-
-  else{
-    response.json(bluesArtist['unknown'])
-  }
-})
-
-app.listen(process.env.PORT || PORT, ()=>{
-  console.log(`Server running on port ${PORT}`)
-})
-
+   

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blues APP Project</title>
+</head>
+<body>
+  <h1>Let the blues be with you</h1>
+  <form action="/artist" method="POST"> <!--Send  a POST request with form-->
+    <input type="text" name="stageName" id="stageName" placeholder="Stage name">
+    <input type="text" name="birthName" id="bithName" placeholder="Birth name">
+    <button type="submit">Submit</button>
+  </form>
+  <h2>Blues's Legends</h2>
+  <ul class="artists">
+    <!--Loop through artist-->
+    <% for(let i = 0; i < artist.length; i++) {%>
+    <li class="artist">
+      <!-- Output stageName from the iterated artist object -->
+      <span><%= artist[i].stageName %></span>:
+      <span><%= artist[i].birthName %></span>
+    </li> <%} %>
+  </ul>
+  
+  <section>
+    <h2>Random blues album</h2>
+    <p>Replace first artist with a random album</p>
+    <button id="update-button">Replace first artist</button>
+  </section>
+<script src="/main.js"></script>
+</body>
+</html>
