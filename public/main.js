@@ -1,5 +1,6 @@
 const update = document.querySelector('#update-button')
 const deleteButton = document.querySelector('#delete-button')
+const message = document.querySelector('#message')
 
 
 
@@ -34,7 +35,11 @@ deleteButton.addEventListener('click', _ =>{
   .then(res=>{
     if (res.ok) return res.json()
   })
-  .then(data => {
+
+  .then(response =>{
+    if(response === 'No album to delete'){
+      message.textContent = 'No album to delete'
+    } else
     window.location.reload()
   })
 })

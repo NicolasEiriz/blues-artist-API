@@ -61,6 +61,9 @@ MongoClient.connect('mongodb+srv://vake:Luj45@cluster0.socyvio.mongodb.net/?retr
           {stageName: 'Blues Albums'} 
         )
         .then(result=>{
+          if(result.deletedCount === 0){
+            return res.json('No album to delete')
+          }
           res.json('Deleted Blues Album')
         })
         .catch(error => console.log(error))
