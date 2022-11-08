@@ -29,9 +29,9 @@ MongoClient.connect('mongodb+srv://vake:Luj45@cluster0.socyvio.mongodb.net/?retr
         })
         
         .then(result => {
-          console.log(result)
+          res.json('Success')
         })
-  
+        
         .catch(error => console.error(error))
     })
 
@@ -56,10 +56,20 @@ MongoClient.connect('mongodb+srv://vake:Luj45@cluster0.socyvio.mongodb.net/?retr
         .catch(error=> console.error(error))
       })
 
-      app.listen(3000, () =>{
-        console.log('listening on 3000');
+      app.delete('/artist', (req,res)=>{
+        artistCollection.deleteOne(
+          {stageName: 'Blues Albums'} 
+        )
+        .then(result=>{
+          res.json('Deleted Blues Album')
+        })
+        .catch(error => console.log(error))
       })
-    })
-  
+ 
+
+ app.listen(3000, () =>{
+  console.log('listening on 3000');
+})
+}) 
 
    
